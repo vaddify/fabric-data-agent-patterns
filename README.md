@@ -1,7 +1,7 @@
 <h1 align="center">Patterns for Microsoft Fabric Data Agents</h1>
 
 <p align="center">
-  <img src="docs/img/fabric-logo.svg" alt="Microsoft Fabric" height="72" />
+  <img src="docs/img/fabric-logo.svg" alt="Microsoft Fabric · Data Agent Patterns" height="120" />
 </p>
 
 ---
