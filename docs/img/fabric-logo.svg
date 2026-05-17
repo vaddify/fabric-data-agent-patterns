@@ -1,64 +1,152 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-label="Microsoft Fabric Data Agent Patterns">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 420" role="img" aria-label="Microsoft Fabric Data Agent">
   <defs>
-    <!-- Fabric brand-inspired teal -> cyan -> indigo -> violet -->
-    <linearGradient id="ribbonA" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"   stop-color="#0FD2C8"/>
-      <stop offset="40%"  stop-color="#1AA7E8"/>
-      <stop offset="100%" stop-color="#3B5BDB"/>
+    <!-- Brand mint backdrop -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#D8F3E2"/>
+      <stop offset="55%"  stop-color="#C2EBD0"/>
+      <stop offset="100%" stop-color="#A8DDBE"/>
     </linearGradient>
-    <linearGradient id="ribbonB" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#3B5BDB"/>
-      <stop offset="55%"  stop-color="#6C5CE7"/>
-      <stop offset="100%" stop-color="#A855F7"/>
+    <radialGradient id="bgShine" cx="22%" cy="18%" r="55%">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Bubble: Fabric ribbon gradient (mint -> deep emerald) -->
+    <linearGradient id="bubble" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#9FE6C2"/>
+      <stop offset="45%"  stop-color="#3FB892"/>
+      <stop offset="100%" stop-color="#0E6B58"/>
     </linearGradient>
-    <linearGradient id="ribbonHi" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Top fold (light highlight band across the ribbon) -->
+    <linearGradient id="bubbleTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#D2F4E0"/>
+      <stop offset="100%" stop-color="#5DC9A3"/>
+    </linearGradient>
+    <!-- Side fold shadow -->
+    <linearGradient id="bubbleShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#0B5C4C" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0B5C4C" stop-opacity="0.45"/>
+    </linearGradient>
+    <!-- Satin sheen -->
+    <linearGradient id="sheen" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
-    <filter id="ribbonShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-      <feOffset dx="0" dy="3" result="off"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
+
+    <!-- AI sparkle gradient -->
+    <linearGradient id="spark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E6FBF1"/>
+    </linearGradient>
+    <linearGradient id="sparkAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#7CDCB1"/>
+      <stop offset="100%" stop-color="#1E8E76"/>
+    </linearGradient>
+
+    <filter id="dropSoft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+      <feOffset dx="0" dy="9" result="off"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.30"/></feComponentTransfer>
       <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sparkGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
 
-  <!-- Fabric-style infinity ribbon mark -->
-  <g transform="translate(20,18)" filter="url(#ribbonShadow)">
-    <!-- ribbon A (lower loop, teal->blue) -->
+  <!-- Backdrop -->
+  <rect x="0" y="0" width="1400" height="420" rx="28" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1400" height="420" rx="28" fill="url(#bgShine)"/>
+
+  <!-- ================== MARK: Fabric ribbon shaped as a speech bubble ================== -->
+  <g transform="translate(90,70)" filter="url(#dropSoft)">
+
+    <!-- Bubble body (rounded squircle, Fabric ribbon gradient) -->
     <path d="
-      M 24 110
-      C 24 60, 70 30, 110 60
-      C 145 86, 145 86, 120 110
-      C 95 134, 50 134, 24 110 Z"
-      fill="url(#ribbonA)"/>
-    <!-- ribbon B (upper loop, blue->violet) crossing in front -->
+      M 60 0
+      L 240 0
+      C 273 0, 300 27, 300 60
+      L 300 200
+      C 300 233, 273 260, 240 260
+      L 140 260
+      L 78 305
+      C 70 311, 60 305, 62 295
+      L 72 260
+      L 60 260
+      C 27 260, 0 233, 0 200
+      L 0 60
+      C 0 27, 27 0, 60 0 Z"
+      fill="url(#bubble)"/>
+
+    <!-- Top folded ribbon band across the bubble (Fabric F-style fold) -->
     <path d="
-      M 140 30
-      C 100 30, 70 60, 90 90
-      C 110 120, 156 120, 144 78
-      C 138 56, 124 40, 140 30 Z"
-      fill="url(#ribbonB)"/>
-    <!-- crossover band: short overlap stripe -->
+      M 18 18
+      C 40 8, 80 6, 120 12
+      L 270 38
+      C 286 41, 290 56, 278 64
+      L 130 90
+      C 80 99, 35 86, 14 64
+      C 6 56, 8 28, 18 18 Z"
+      fill="url(#bubbleTop)"/>
+    <!-- subtle satin on top fold -->
     <path d="
-      M 92 80
-      C 100 70, 116 70, 124 80
-      C 132 92, 124 100, 116 98
-      C 104 96, 92 90, 92 80 Z"
-      fill="url(#ribbonB)" opacity="0.85"/>
-    <!-- highlight strip across both ribbons -->
+      M 28 22
+      C 60 14, 110 14, 150 22
+      L 260 44
+      C 268 46, 268 54, 260 56
+      L 150 72
+      C 110 80, 60 70, 28 56 Z"
+      fill="url(#sheen)" opacity="0.75"/>
+
+    <!-- Side fold shadow on the right edge (gives the ribbon depth) -->
     <path d="
-      M 30 100
-      C 60 70, 110 70, 150 60"
-      fill="none" stroke="url(#ribbonHi)" stroke-width="6" stroke-linecap="round"/>
-    <!-- subtle inner accent dot (anchors the mark) -->
-    <circle cx="108" cy="88" r="4" fill="#FFFFFF" opacity="0.9"/>
+      M 290 50
+      C 296 70, 296 200, 290 230
+      L 282 230
+      C 282 200, 282 70, 282 50 Z"
+      fill="url(#bubbleShade)"/>
+
+    <!-- Bubble tail subtle highlight -->
+    <path d="M 78 268 L 96 268 L 82 296 Z" fill="url(#sheen)" opacity="0.5"/>
+
+    <!-- ===== Intelligent-answer mark inside the bubble: AI sparkle + soft dots ===== -->
+    <!-- main 4-point sparkle -->
+    <g transform="translate(150,140)" filter="url(#sparkGlow)">
+      <path d="
+        M 0 -62
+        C 8 -22, 22 -8, 62 0
+        C 22 8, 8 22, 0 62
+        C -8 22, -22 8, -62 0
+        C -22 -8, -8 -22, 0 -62 Z"
+        fill="url(#spark)"/>
+      <!-- inner accent -->
+      <path d="
+        M 0 -28
+        C 4 -10, 10 -4, 28 0
+        C 10 4, 4 10, 0 28
+        C -4 10, -10 4, -28 0
+        C -10 -4, -4 -10, 0 -28 Z"
+        fill="url(#sparkAccent)" opacity="0.9"/>
+    </g>
+    <!-- small companion sparkles -->
+    <g fill="url(#spark)" opacity="0.95">
+      <path d="M 72 198 l 3 -10 l 3 10 l 10 3 l -10 3 l -3 10 l -3 -10 l -10 -3 z"/>
+      <path d="M 232 80 l 2.5 -8 l 2.5 8 l 8 2.5 l -8 2.5 l -2.5 8 l -2.5 -8 l -8 -2.5 z"/>
+    </g>
   </g>
 
-  <!-- Wordmark -->
-  <g font-family="Segoe UI, Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif">
-    <text x="210" y="78"  font-size="38" font-weight="700" fill="#0F172A" letter-spacing="-0.6">Microsoft Fabric</text>
-    <text x="210" y="116" font-size="24" font-weight="600" fill="#3B5BDB" letter-spacing="0.2">Data Agent Patterns</text>
-    <text x="210" y="146" font-size="13" font-weight="600" fill="#64748B" letter-spacing="1.4">GROUNDED &#x2022; GATED &#x2022; PRODUCTION-READY</text>
+  <!-- ================== WORDMARK ================== -->
+  <g font-family="Segoe UI, Segoe UI Variable Display, Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif">
+    <!-- Microsoft Fabric (light weight, brand-style) -->
+    <text x="500" y="180" font-size="78" font-weight="350" fill="#1F3B33" letter-spacing="-1.6">Microsoft Fabric</text>
+    <!-- Data Agent (bold, emerald accent) -->
+    <text x="500" y="260" font-size="62" font-weight="700" fill="#0E6B58" letter-spacing="-1.0">Data Agent</text>
+    <!-- thin separator line -->
+    <line x1="502" y1="284" x2="700" y2="284" stroke="#0E6B58" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+    <!-- tagline -->
+    <text x="502" y="318" font-size="18" font-weight="600" fill="#1F8F75" letter-spacing="2.4">
+      GROUNDED &#x2022; GATED &#x2022; PRODUCTION-READY
+    </text>
   </g>
 </svg>
