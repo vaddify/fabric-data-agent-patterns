@@ -8,6 +8,8 @@
 
 Repeatable, **gated** patterns for shipping Microsoft Fabric Data Agents on enterprise tenants. Each pattern ships with a playbook, drop-in assets, a one-page Go / No-Go checklist, and a CI-runnable score gate that catches ungrounded answers before they reach users.
 
+> **New here?** Start with the [**Quickstart**](./QUICKSTART.md) — a step-by-step that walks you through the exact end-to-end we ran (workspace creation, synthetic data, model deploy, agent publish, score gate, capacity pause) in ~60 minutes.
+
 > **Why this repo exists.** Most Fabric Data Agent demos look great on a synthetic dataset and quietly fall apart on real semantic models — wrong audience tokens, consolidated run endpoints that bypass grounding, and "10/10 pass" scores that are actually polite deflections. These patterns are the result of taking one end-to-end and writing down everything that wasn't in the docs.
 
 ---
@@ -87,12 +89,13 @@ The semantic-readiness pattern is domain-agnostic. Each folder below adapts it t
 
 ## How to use this repo
 
-1. Pick a pattern.
-2. Read its `README.md` (when to use / not to use).
-3. Run `checklist.md` to decide Go / No-Go.
-4. Execute `playbook.md` step by step.
-5. Use everything under `assets/` as drop-in artifacts.
-6. Gate with `assets/score-agent.ps1` — commit the report.
+1. Read the [Quickstart](./QUICKSTART.md) for the end-to-end walkthrough.
+2. Pick a pattern under [`patterns/`](./patterns/).
+3. Read its `README.md` (when to use / not to use).
+4. Run `checklist.md` to decide Go / No-Go.
+5. Execute `playbook.md` step by step.
+6. Use everything under `assets/` as drop-in artifacts.
+7. Gate with `assets/score-agent.ps1` — commit the report.
 
 ## Repo layout
 
