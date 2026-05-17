@@ -1,0 +1,65 @@
+/// Inventory fact. Weekly snapshots per market x SKU.
+table fact_inventory
+	lineageTag: e8c21e69-ada2-4984-a2db-f6a179f35725
+
+	/// Snapshot surrogate id.
+	column inventory_snapshot_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: inventory_snapshot_id
+		lineageTag: f88905ff-e858-467d-b8b8-52c7b0309ea8
+
+	/// Date of the inventory snapshot. FK to dim_date.
+	column snapshot_date
+		dataType: dateTime
+		isHidden
+		summarizeBy: none
+		sourceColumn: snapshot_date
+		lineageTag: fe8b6823-8c0d-4200-bc82-96fbd107f69c
+
+	/// FK to dim_market.
+	column market_key
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: market_key
+		lineageTag: 9c20c273-47bd-4264-9480-1a494b44559e
+
+	/// FK to dim_product.
+	column sku
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: sku
+		lineageTag: 6e10f9e9-8581-41de-ab73-67a8bab083f2
+
+	/// On-hand inventory units at snapshot.
+	column stock_units
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: stock_units
+		lineageTag: 24af1ef1-7601-43f9-b620-3e3d86ff6342
+
+	/// Average daily sell-out units around snapshot.
+	column daily_sell_out_units
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: daily_sell_out_units
+		lineageTag: 69ffcb7a-9ad8-4b45-90a9-59da7713cdb6
+
+	/// Average stock-on-hand divided by average daily sell-out. Target band: 14-28 days.
+	measure 'Days of Supply' = DIVIDE ( AVERAGE ( 'fact_inventory'[stock_units] ), AVERAGE ( 'fact_inventory'[daily_sell_out_units] ) )
+		formatString: "#,0.0"
+		displayFolder: 04 Operations\Supply Chain
+		lineageTag: 943911f4-bc51-4b95-aa17-5a060947a5ea
+
+	partition fact_inventory = entity
+		mode: directLake
+		source
+			entityName: fact_inventory
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

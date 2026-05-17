@@ -1,0 +1,182 @@
+/// Sales orders fact. One row per order line. Source: wh_silver_gold.fact_sales_orders.
+/// Use measures [NSV], [Volume Cases], [Volume Tons], [OTIF %] — do not aggregate columns directly.
+table fact_sales_orders
+	lineageTag: f1000000-0000-0000-0000-000000000001
+
+	column order_line_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_line_id
+		/// Surrogate identifier for an order line. Hidden — used only for joins and distinct counts.
+
+	column order_date
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: order_date
+		/// Calendar date the order line was placed.
+		annotation SynonymsTag = order date, transaction date, booking date, sell-out date
+
+	column net_sales_value_usd
+		dataType: decimal
+		isHidden
+		summarizeBy: none
+		sourceColumn: net_sales_value_usd
+		/// Net Sales Value in USD for the line, after returns, discounts, and trade spend. Hidden — use the [NSV] measure.
+
+	column volume_cases
+		dataType: decimal
+		isHidden
+		summarizeBy: none
+		sourceColumn: volume_cases
+		/// Volume in standard equivalent cases. Hidden — use the [Volume Cases] measure.
+
+	column volume_tons
+		dataType: decimal
+		isHidden
+		summarizeBy: none
+		sourceColumn: volume_tons
+		/// Volume in metric tons. Hidden — use the [Volume Tons] measure.
+
+	column is_on_time
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_on_time
+		/// TRUE when the line was delivered by the agreed customer delivery date. Drives [OTIF %].
+		annotation SynonymsTag = on time, on-time, OT, schedule adherence
+
+	column is_in_full
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_in_full
+		/// TRUE when the line was shipped in the full ordered quantity (no short ship). Drives [OTIF %].
+		annotation SynonymsTag = in full, in-full, IF, case fill, full quantity
+
+/// Production fact. One row per shift, line, and SKU. Source: wh_silver_gold.fact_production.
+/// Use measures [OEE], [Downtime Hours], [Scrap %] — do not aggregate columns directly.
+table fact_production
+	lineageTag: f1000000-0000-0000-0000-000000000002
+
+	column production_event_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: production_event_id
+		/// Surrogate identifier for a production event (shift × line × SKU). Hidden.
+
+	column shift_date
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: shift_date
+		/// Calendar date of the manufacturing shift.
+		annotation SynonymsTag = shift date, production date, run date
+
+	column planned_production_hours
+		dataType: decimal
+		isHidden
+		summarizeBy: none
+		sourceColumn: planned_production_hours
+		/// Scheduled production hours for the shift. Hidden — used by [OEE].
+
+	column run_time_hours
+		dataType: decimal
+		isHidden
+		summarizeBy: none
+		sourceColumn: run_time_hours
+		/// Actual run-time hours (planned minus downtime). Hidden — used by [OEE].
+
+	column downtime_hours
+		dataType: decimal
+		isHidden
+		summarizeBy: none
+		sourceColumn: downtime_hours
+		/// Unplanned downtime hours. Hidden — use [Downtime Hours].
+
+	column units_produced
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: units_produced
+		/// Total units produced (good + scrap). Hidden — used by [OEE] and [Scrap %].
+
+	column good_units
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: good_units
+		/// Units that passed quality. Hidden — used by [OEE] and [Scrap %].
+
+	column ideal_units
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: ideal_units
+		/// Units that would have been produced at ideal cycle time × run time. Hidden — used by [OEE] Performance.
+
+/// Market dimension. One row per country × trade-channel combination. Source: wh_silver_gold.dim_market.
+table dim_market
+	lineageTag: f1000000-0000-0000-0000-000000000010
+
+	column country
+		dataType: string
+		summarizeBy: none
+		sourceColumn: country
+		/// Country in which sales are reported. Use anonymized labels (e.g., Market_EU1) in samples.
+		annotation SynonymsTag = market, geo, country, region, cluster, geography
+
+	column channel
+		dataType: string
+		summarizeBy: none
+		sourceColumn: channel
+		/// Trade channel: Modern Trade, Traditional Trade, eCommerce, Foodservice, Wholesale.
+		annotation SynonymsTag = trade channel, route to market, RTM, customer type, channel
+
+/// Plant dimension. One row per manufacturing line. Source: wh_silver_gold.dim_plant.
+table dim_plant
+	lineageTag: f1000000-0000-0000-0000-000000000011
+
+	column plant_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: plant_name
+		/// Manufacturing site label. Use anonymized values (e.g., Plant_A, Plant_B) in samples.
+		annotation SynonymsTag = plant, factory, site, manufacturing site, facility
+
+	column line_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: line_name
+		/// Production line label within a plant. Anonymized (e.g., Line_01).
+		annotation SynonymsTag = line, production line, packaging line, asset
+
+/// Product dimension. One row per SKU. Source: wh_silver_gold.dim_product.
+table dim_product
+	lineageTag: f1000000-0000-0000-0000-000000000012
+
+	column sku
+		dataType: string
+		summarizeBy: none
+		sourceColumn: sku
+		/// Stock Keeping Unit code. Use anonymized codes (e.g., SKU_0001) in samples.
+		annotation SynonymsTag = SKU, item, product code, article, material
+
+	column brand
+		dataType: string
+		summarizeBy: none
+		sourceColumn: brand
+		/// Brand label. Use anonymized labels (e.g., Brand_X, Brand_Y) in samples — never real brand names.
+		annotation SynonymsTag = brand, label, range, banner
+
+	column category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: category
+		/// Product category (e.g., Beverages, Confectionery, Dairy).
+		annotation SynonymsTag = category, segment, product group
+
+	column pack_size
+		dataType: string
+		summarizeBy: none
+		sourceColumn: pack_size
+		/// Pack configuration (e.g., 12x330ml, 6x1kg). Used to derive standard cases.
+		annotation SynonymsTag = pack, pack size, format, configuration

@@ -1,0 +1,151 @@
+/// Sales orders fact. One row per order line.
+table fact_sales_orders
+	lineageTag: e98d7517-39bb-4fc9-b04a-b0f2a8cc8482
+
+	/// Order line surrogate id.
+	column order_line_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_line_id
+		lineageTag: b14687bb-4e66-432e-af2b-d19b4efd138c
+
+	/// Order placement date. FK to dim_date.
+	column order_date
+		dataType: dateTime
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_date
+		lineageTag: d02e69df-303e-4393-a208-03e420781850
+
+	/// FK to dim_market.
+	column market_key
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: market_key
+		lineageTag: 87b315b8-2b12-414d-ab66-f000f1c33c9a
+
+	/// FK to dim_product.
+	column sku
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: sku
+		lineageTag: 0aaf1ddd-b36f-4c07-8817-97e41fc67649
+
+	/// Line NSV in USD. Use [NSV] measure.
+	column net_sales_value_usd
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: net_sales_value_usd
+		lineageTag: 96ed8e63-eb14-443a-94f7-30c0c19f69ae
+
+	/// Standard equivalent cases. Use [Volume Cases].
+	column volume_cases
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: volume_cases
+		lineageTag: 1b7da0bf-781c-42d0-93ba-566ccde46954
+
+	/// Volume in metric tons. Use [Volume Tons].
+	column volume_tons
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: volume_tons
+		lineageTag: 3f678363-9372-488b-95ea-7005d59ac45a
+
+	/// Delivered on or before agreed date. Drives OTIF.
+	column is_on_time
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_on_time
+		lineageTag: 0ea2dd4a-389d-4896-99a8-56b74f710a6b
+
+	/// Delivered in full quantity. Drives OTIF.
+	column is_in_full
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_in_full
+		lineageTag: 0fbfe3c5-9cf8-4f02-8a07-bbad575f187e
+
+	/// Net Sales Value in USD: invoiced sales net of returns, discounts, and trade allowances.
+	measure 'NSV' = SUM ( 'fact_sales_orders'[net_sales_value_usd] )
+		formatString: "\$#,0;(\$#,0);\$0"
+		displayFolder: 01 Commercial\Headline
+		lineageTag: 5a791a50-63f8-4d6c-af34-7b8d5f8837f7
+
+	/// Sales volume in standard equivalent cases.
+	measure 'Volume Cases' = SUM ( 'fact_sales_orders'[volume_cases] )
+		formatString: "#,0"
+		displayFolder: 01 Commercial\Headline
+		lineageTag: a61cdd9f-86f7-4b07-9547-1fa0b7ea090a
+
+	/// Sales volume in metric tons.
+	measure 'Volume Tons' = SUM ( 'fact_sales_orders'[volume_tons] )
+		formatString: "#,0.0"
+		displayFolder: 01 Commercial\Headline
+		lineageTag: 3a9c2432-38b0-4937-916e-d6021c7b4679
+
+	/// NSV same period last year.
+	measure 'NSV LY' = CALCULATE ( [NSV], SAMEPERIODLASTYEAR ( 'dim_date'[date] ) )
+		formatString: "\$#,0"
+		displayFolder: 02 Commercial\Time Intelligence
+		lineageTag: b9d56f75-c8f8-44d0-a2b2-4cd4b76bc59d
+
+	/// Year-over-year growth rate of NSV.
+	measure 'NSV YoY %' = VAR _cur = [NSV] VAR _ly = [NSV LY] RETURN DIVIDE ( _cur - _ly, _ly )
+		formatString: "0.0%;-0.0%;0.0%"
+		displayFolder: 02 Commercial\Time Intelligence
+		lineageTag: 0a97557f-4901-4f66-bf22-759ea198c1a7
+
+	/// NSV month-to-date.
+	measure 'NSV MTD' = TOTALMTD ( [NSV], 'dim_date'[date] )
+		formatString: "\$#,0"
+		displayFolder: 02 Commercial\Time Intelligence
+		lineageTag: bc96452c-fa34-4a27-9ce8-516a96f6dce4
+
+	/// NSV quarter-to-date.
+	measure 'NSV QTD' = TOTALQTD ( [NSV], 'dim_date'[date] )
+		formatString: "\$#,0"
+		displayFolder: 02 Commercial\Time Intelligence
+		lineageTag: a32c1ec8-1265-4869-a42f-e5a1ce4a3948
+
+	/// Moving Annual Total Volume Cases - trailing 12 months.
+	measure 'Volume Cases MAT' = CALCULATE ( [Volume Cases], DATESINPERIOD ( 'dim_date'[date], MAX ( 'dim_date'[date] ), -12, MONTH ) )
+		formatString: "#,0"
+		displayFolder: 02 Commercial\Time Intelligence
+		lineageTag: 3717fe3c-b3f0-47f8-95e3-e311c79c72f7
+
+	/// YoY growth rate of Volume Cases.
+	measure 'Volume Cases YoY %' = VAR _cur = [Volume Cases] VAR _ly = CALCULATE ( [Volume Cases], SAMEPERIODLASTYEAR ( 'dim_date'[date] ) ) RETURN DIVIDE ( _cur - _ly, _ly )
+		formatString: "0.0%;-0.0%;0.0%"
+		displayFolder: 02 Commercial\Time Intelligence
+		lineageTag: 9fb75f5b-bcae-4abe-a452-d56d005dfe37
+
+	/// On-Time In-Full: share of order lines delivered both on time and in full.
+	measure 'OTIF %' = DIVIDE ( CALCULATE ( DISTINCTCOUNT ( 'fact_sales_orders'[order_line_id] ), 'fact_sales_orders'[is_on_time] = TRUE (), 'fact_sales_orders'[is_in_full] = TRUE () ), DISTINCTCOUNT ( 'fact_sales_orders'[order_line_id] ) )
+		formatString: "0.0%"
+		displayFolder: 04 Operations\Supply Chain
+		lineageTag: 584fc52a-c35e-440c-8198-6a37893880d5
+
+	/// Market with the highest NSV in the selected context.
+	measure 'Top Market by NSV' = VAR _ranked = TOPN ( 1, VALUES ( 'dim_market'[country] ), [NSV], DESC ) RETURN CONCATENATEX ( _ranked, 'dim_market'[country], ", " )
+		displayFolder: 05 Rankings
+		lineageTag: f27f4c94-e8bc-430c-950e-e4d178a99c7d
+
+	/// Top 5 SKUs by Volume Cases.
+	measure 'Top 5 SKUs by Volume' = VAR _t = TOPN ( 5, VALUES ( 'dim_product'[sku] ), [Volume Cases], DESC ) RETURN CONCATENATEX ( _t, 'dim_product'[sku], ", " )
+		displayFolder: 05 Rankings
+		lineageTag: 2f9fa20c-6ae5-4afd-b9a1-e87cb1de64fe
+
+	partition fact_sales_orders = entity
+		mode: directLake
+		source
+			entityName: fact_sales_orders
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

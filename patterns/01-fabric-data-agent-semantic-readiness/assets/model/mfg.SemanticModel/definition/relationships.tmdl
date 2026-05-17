@@ -1,0 +1,37 @@
+relationship ee18b263-de69-4e7e-944f-87dee5150ca4
+	fromColumn: fact_sales_orders.order_date
+	toColumn: dim_date.date
+	crossFilteringBehavior: oneDirection
+relationship e4bbc0ab-328d-4ef9-bd4c-5ece061370f7
+	fromColumn: fact_sales_orders.market_key
+	toColumn: dim_market.market_key
+	crossFilteringBehavior: oneDirection
+relationship 38edf5ee-633b-47b2-934d-bd30289548b0
+	fromColumn: fact_sales_orders.sku
+	toColumn: dim_product.sku
+	crossFilteringBehavior: oneDirection
+relationship 96136db5-8a02-4e33-8df2-56c968477a86
+	fromColumn: fact_production.shift_date
+	toColumn: dim_date.date
+	crossFilteringBehavior: oneDirection
+relationship 537e3f9c-c661-49fd-bdeb-e4ef3796472c
+	fromColumn: fact_production.plant_line_key
+	toColumn: dim_plant.plant_line_key
+	crossFilteringBehavior: oneDirection
+relationship c29deed4-755c-460a-a3f2-f94be0a8fb92
+	fromColumn: fact_production.sku
+	toColumn: dim_product.sku
+	crossFilteringBehavior: oneDirection
+relationship 5ce26ded-9f48-49b1-a0b6-8b234d2d1720
+	fromColumn: fact_inventory.snapshot_date
+	toColumn: dim_date.date
+	crossFilteringBehavior: oneDirection
+relationship 2f614519-1478-45be-9936-8bbadc694774
+	fromColumn: fact_inventory.market_key
+	toColumn: dim_market.market_key
+	crossFilteringBehavior: oneDirection
+relationship 45bb9c2d-f082-46f8-9ac1-0631954d1d3e
+	fromColumn: fact_inventory.sku
+	toColumn: dim_product.sku
+	crossFilteringBehavior: oneDirection
+

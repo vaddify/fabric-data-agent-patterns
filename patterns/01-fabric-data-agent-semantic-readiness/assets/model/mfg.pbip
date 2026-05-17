@@ -1,0 +1,13 @@
+{
+  "artifacts": [
+    {
+      "report": {
+        "path": "mfg.Report"
+      }
+    }
+  ],
+  "settings": {
+    "enableAutoRecovery": true
+  },
+  "version": "1.0"
+}

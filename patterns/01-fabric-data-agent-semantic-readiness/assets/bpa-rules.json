@@ -1,0 +1,69 @@
+[
+  {
+    "ID": "DESC-TABLE-REQUIRED",
+    "Name": "Visible tables must have a description",
+    "Category": "Semantic Readiness",
+    "Description": "Every visible table must carry a business-language description so the Data Agent can map user terms.",
+    "Severity": 3,
+    "Scope": "Table",
+    "Expression": "not IsHidden and string.IsNullOrWhiteSpace(Description)",
+    "FixExpression": "Description = \"TODO: business description\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "DESC-COLUMN-REQUIRED",
+    "Name": "Visible columns must have a description",
+    "Category": "Semantic Readiness",
+    "Severity": 3,
+    "Scope": "Column",
+    "Expression": "not IsHidden and string.IsNullOrWhiteSpace(Description)"
+  },
+  {
+    "ID": "DESC-MEASURE-REQUIRED",
+    "Name": "Measures must have a description",
+    "Category": "Semantic Readiness",
+    "Severity": 3,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrWhiteSpace(Description)"
+  },
+  {
+    "ID": "MEAS-EXPLICIT-AGG",
+    "Name": "No implicit aggregations on visible numeric columns",
+    "Category": "Semantic Readiness",
+    "Severity": 3,
+    "Scope": "Column",
+    "Expression": "not IsHidden and (DataType = DataType.Int64 or DataType = DataType.Decimal or DataType = DataType.Double) and SummarizeBy <> SummarizeBy.None"
+  },
+  {
+    "ID": "MEAS-DISPLAY-FOLDER",
+    "Name": "Measures must be in a display folder",
+    "Category": "Semantic Readiness",
+    "Severity": 1,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrWhiteSpace(DisplayFolder)"
+  },
+  {
+    "ID": "REL-SINGLE-DIRECTION",
+    "Name": "Relationships should be single direction unless justified",
+    "Category": "Semantic Readiness",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "CrossFilteringBehavior = CrossFilteringBehavior.BothDirections"
+  },
+  {
+    "ID": "FK-HIDDEN",
+    "Name": "Foreign key columns (many-side) must be hidden",
+    "Category": "Semantic Readiness",
+    "Severity": 2,
+    "Scope": "Column",
+    "Expression": "UsedInRelationships.Any(FromColumn = outerIt) and not IsHidden"
+  },
+  {
+    "ID": "DATE-TABLE-MARKED",
+    "Name": "A date table must be marked as date table",
+    "Category": "Semantic Readiness",
+    "Severity": 3,
+    "Scope": "Model",
+    "Expression": "not Tables.Any(it.DataCategory = \"Time\")"
+  }
+]

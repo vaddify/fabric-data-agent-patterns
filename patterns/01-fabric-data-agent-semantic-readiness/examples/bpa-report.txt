@@ -1,0 +1,9 @@
+
+Tabular Editor 2.28.0 (build 2.28.9557.26801)
+--------------------------------
+Loading model...
+Running Best Practice Analyzer...
+=================================
+No objects in violation of Best Practices.
+=================================
+##vso[task.complete result=Succeeded;]Done.

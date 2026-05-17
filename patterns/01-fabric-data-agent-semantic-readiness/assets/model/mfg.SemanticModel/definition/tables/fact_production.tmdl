@@ -1,0 +1,109 @@
+/// Production fact. One row per shift x line x SKU.
+table fact_production
+	lineageTag: f19e78b5-7fa1-47dc-99cc-86e4f4c426da
+
+	/// Production event surrogate id.
+	column production_event_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: production_event_id
+		lineageTag: 149e1f8f-d2f0-46af-9ccd-53aa9d000450
+
+	/// Date of the manufacturing shift. FK to dim_date.
+	column shift_date
+		dataType: dateTime
+		isHidden
+		summarizeBy: none
+		sourceColumn: shift_date
+		lineageTag: 03bdfea0-e232-4b02-9400-6641b7568fd0
+
+	/// FK to dim_plant.
+	column plant_line_key
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: plant_line_key
+		lineageTag: 150d58d9-da64-48ff-b86d-ceb09cda2de0
+
+	/// FK to dim_product.
+	column sku
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: sku
+		lineageTag: b9de6f8a-4c44-4990-bf80-62297aa7b156
+
+	/// Scheduled hours. Used by [OEE].
+	column planned_production_hours
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: planned_production_hours
+		lineageTag: a7adf7c3-7fc8-49fe-9218-1525c40500da
+
+	/// Actual run hours. Used by [OEE].
+	column run_time_hours
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: run_time_hours
+		lineageTag: bae3cdca-9f4a-4def-9ce6-fa1fa0df85a8
+
+	/// Unplanned downtime hours. Use [Downtime Hours].
+	column downtime_hours
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: downtime_hours
+		lineageTag: 9b3eb630-2022-4665-b744-0ff644b4d044
+
+	/// Units produced (good + scrap). Used by [OEE] and [Scrap %].
+	column units_produced
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: units_produced
+		lineageTag: 7e6e9f00-6e77-4325-831b-3b1104ffe31f
+
+	/// Units passing quality. Used by [OEE] and [Scrap %].
+	column good_units
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: good_units
+		lineageTag: fec77920-d1ee-46e4-9a70-95be7042a9f6
+
+	/// Units at ideal cycle time. Used by [OEE] performance.
+	column ideal_units
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: ideal_units
+		lineageTag: 2c14f6df-4052-452b-9e15-e5096afaa2ca
+
+	/// Overall Equipment Effectiveness = Availability x Performance x Quality.
+	measure 'OEE' = VAR _avail = DIVIDE ( SUM ( 'fact_production'[run_time_hours] ), SUM ( 'fact_production'[planned_production_hours] ) ) VAR _perf = DIVIDE ( SUM ( 'fact_production'[units_produced] ), SUM ( 'fact_production'[ideal_units] ) ) VAR _qual = DIVIDE ( SUM ( 'fact_production'[good_units] ), SUM ( 'fact_production'[units_produced] ) ) RETURN _avail * _perf * _qual
+		formatString: "0.0%"
+		displayFolder: 03 Operations\Manufacturing
+		lineageTag: 56125a64-b208-4720-8bc6-64923cbb5c1f
+
+	/// Total unplanned downtime in hours.
+	measure 'Downtime Hours' = SUM ( 'fact_production'[downtime_hours] )
+		formatString: "#,0.0"
+		displayFolder: 03 Operations\Manufacturing
+		lineageTag: 2c30f051-0ac4-41d9-8bc3-7cf355dcff43
+
+	/// Share of produced units rejected as scrap.
+	measure 'Scrap %' = DIVIDE ( SUM ( 'fact_production'[units_produced] ) - SUM ( 'fact_production'[good_units] ), SUM ( 'fact_production'[units_produced] ) )
+		formatString: "0.0%"
+		displayFolder: 03 Operations\Manufacturing
+		lineageTag: a0f829bf-772b-446f-8e5f-92715db57029
+
+	partition fact_production = entity
+		mode: directLake
+		source
+			entityName: fact_production
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

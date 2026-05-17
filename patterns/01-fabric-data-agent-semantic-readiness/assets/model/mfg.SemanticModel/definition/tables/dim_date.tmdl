@@ -1,0 +1,71 @@
+/// Date dimension. One row per day. Marked as date table.
+table dim_date
+	lineageTag: 9da85971-5188-4f58-9939-6a7271766346
+	dataCategory: Time
+	annotation MarkAsDateTable = 1
+
+	/// Calendar date.
+	column date
+		dataType: dateTime
+		dataCategory: PaddedDateTableDates
+		summarizeBy: none
+		sourceColumn: date
+		lineageTag: 012a75f2-fd0d-45aa-9932-50a970d481b3
+
+	/// Calendar year.
+	column year
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: year
+		lineageTag: 01e79007-fe4c-4dd2-8e9e-72f64571daab
+
+	/// Quarter label (e.g. Q1-2025).
+	column quarter
+		dataType: string
+		summarizeBy: none
+		sourceColumn: quarter
+		lineageTag: 004b9f97-e1cf-4e33-88e9-e73e69b25d26
+
+	/// Month number (1-12).
+	column month_num
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: month_num
+		lineageTag: 07a05534-e3dc-4fed-b59d-5a00b6d47136
+
+	/// Month label (e.g. Jan-2025).
+	column month_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: month_name
+		lineageTag: 21e3d9c0-3c09-4dba-8dcc-5052e521dc4b
+
+	/// ISO week of year.
+	column week_of_year
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: week_of_year
+		lineageTag: 2133bc62-b96e-4ff0-8980-e2608bcd48dd
+
+	/// Day of week name.
+	column day_of_week
+		dataType: string
+		summarizeBy: none
+		sourceColumn: day_of_week
+		lineageTag: 98c6b9cc-ca5a-4aad-907a-5f85b0464998
+
+	/// TRUE on Saturday or Sunday.
+	column is_weekend
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_weekend
+		lineageTag: e9fafeff-0583-4186-8296-30409fe240d0
+
+	partition dim_date = entity
+		mode: directLake
+		source
+			entityName: dim_date
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

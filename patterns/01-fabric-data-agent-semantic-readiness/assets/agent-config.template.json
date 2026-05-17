@@ -1,0 +1,45 @@
+{
+  "$schema": "https://example.com/fabric-data-agent-config.schema.json",
+  "_comment": "Template for a Fabric Data Agent — Manufacturing / CPG. Replace <PLACEHOLDERS> before importing. Used as documentation reference — Fabric UI is currently the authoritative editor. Do not put real customer, brand, or plant names in this file.",
+  "name": "agent_mfg",
+  "displayName": "Manufacturing Insights Agent",
+  "description": "Answers commercial and operational KPI questions for a CPG manufacturer, grounded on sm_mfg_agentready. Uses anonymized market, plant, brand, and SKU labels only.",
+  "workspaceId": "<WORKSPACE_GUID>",
+  "dataSources": [
+    {
+      "type": "PowerBISemanticModel",
+      "id": "<SEMANTIC_MODEL_GUID>",
+      "displayName": "sm_mfg_agentready"
+    }
+  ],
+  "instructionsFile": "./agent-instructions.md",
+  "exampleQuestions": [
+    {
+      "question": "What was NSV last quarter?",
+      "expectedInterpretation": "Filter dim_date to previous quarter; return [NSV QTD]."
+    },
+    {
+      "question": "Show me year-over-year NSV growth by market.",
+      "expectedInterpretation": "Group by dim_market[country]; return [NSV YoY %]."
+    },
+    {
+      "question": "What is the MAT volume in cases for our top brand?",
+      "expectedInterpretation": "Rank dim_product[brand] by [Volume Cases MAT] desc; return top 1 with its [Volume Cases MAT] value."
+    },
+    {
+      "question": "What is OEE by plant this month?",
+      "expectedInterpretation": "Filter dim_date to current month; group by dim_plant[plant_name]; return [OEE]."
+    },
+    {
+      "question": "What is OTIF by trade channel month-to-date?",
+      "expectedInterpretation": "Filter dim_date to MTD; group by dim_market[channel]; return [OTIF %]."
+    }
+  ],
+  "guardrails": {
+    "refuseOutOfScope": true,
+    "requireGroundedAnswer": true,
+    "maxClarifyingQuestions": 1,
+    "denyRealCustomerOrBrandNames": true,
+    "requireAnonymizedLabels": true
+  }
+}

@@ -1,0 +1,34 @@
+/// Market dimension. One row per country x channel.
+table dim_market
+	lineageTag: 9048581e-0fcd-4c9f-bfd0-747ec954d1af
+
+	/// Surrogate key for market.
+	column market_key
+		dataType: int64
+		isHidden
+		isKey
+		summarizeBy: none
+		sourceColumn: market_key
+		lineageTag: f86e8038-b53b-4dfe-9a25-c8e01f93ff55
+
+	/// Anonymized market label (e.g. Market_EU1). Never real country names.
+	column country
+		dataType: string
+		summarizeBy: none
+		sourceColumn: country
+		lineageTag: 071bf660-d363-4dd3-b2e1-14644665abd2
+
+	/// Trade channel (Modern Trade, Traditional Trade, eCommerce, Foodservice, Wholesale).
+	column channel
+		dataType: string
+		summarizeBy: none
+		sourceColumn: channel
+		lineageTag: fe76763f-bc20-429d-a044-23ab9fc839a2
+
+	partition dim_market = entity
+		mode: directLake
+		source
+			entityName: dim_market
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

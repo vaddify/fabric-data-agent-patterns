@@ -1,0 +1,154 @@
+// Reference DAX measures for an agent-ready manufacturing / CPG model.
+// Copy into Tabular Editor, adjust column references to your model.
+// Every measure has: explicit DAX, format string, display folder, description.
+// Default units: cases for volume, tons for mass, USD for value. No customer or brand names.
+
+// ============================================================
+// 01 Commercial \ Headline
+// ============================================================
+
+MEASURE 'fact_sales_orders'[NSV] =
+    SUM ( 'fact_sales_orders'[net_sales_value_usd] )
+    -- DisplayFolder: 01 Commercial \ Headline
+    -- FormatString: "\$#,0;(\$#,0);\$0"
+    -- Description: "Net Sales Value in USD: invoiced sales net of returns, discounts, and trade allowances."
+
+MEASURE 'fact_sales_orders'[Volume Cases] =
+    SUM ( 'fact_sales_orders'[volume_cases] )
+    -- DisplayFolder: 01 Commercial \ Headline
+    -- FormatString: "#,0"
+    -- Description: "Sales volume expressed in standard equivalent cases for the selected context."
+
+MEASURE 'fact_sales_orders'[Volume Tons] =
+    SUM ( 'fact_sales_orders'[volume_tons] )
+    -- DisplayFolder: 01 Commercial \ Headline
+    -- FormatString: "#,0.0"
+    -- Description: "Sales volume in metric tons for the selected context."
+
+// ============================================================
+// 02 Commercial \ Time Intelligence
+// ============================================================
+
+MEASURE 'fact_sales_orders'[NSV LY] =
+    CALCULATE ( [NSV], SAMEPERIODLASTYEAR ( 'dim_date'[date] ) )
+    -- DisplayFolder: 02 Commercial \ Time Intelligence
+    -- FormatString: "\$#,0"
+    -- Description: "NSV for the same period one year prior."
+
+MEASURE 'fact_sales_orders'[NSV YoY %] =
+    VAR _cur = [NSV]
+    VAR _ly  = [NSV LY]
+    RETURN DIVIDE ( _cur - _ly, _ly )
+    -- DisplayFolder: 02 Commercial \ Time Intelligence
+    -- FormatString: "0.0%;-0.0%;0.0%"
+    -- Description: "Year-over-year growth rate of NSV. Positive = growth."
+
+MEASURE 'fact_sales_orders'[NSV MTD] =
+    TOTALMTD ( [NSV], 'dim_date'[date] )
+    -- DisplayFolder: 02 Commercial \ Time Intelligence
+    -- FormatString: "\$#,0"
+    -- Description: "NSV month-to-date."
+
+MEASURE 'fact_sales_orders'[NSV QTD] =
+    TOTALQTD ( [NSV], 'dim_date'[date] )
+    -- DisplayFolder: 02 Commercial \ Time Intelligence
+    -- FormatString: "\$#,0"
+    -- Description: "NSV quarter-to-date."
+
+MEASURE 'fact_sales_orders'[Volume Cases MAT] =
+    CALCULATE (
+        [Volume Cases],
+        DATESINPERIOD ( 'dim_date'[date], MAX ( 'dim_date'[date] ), -12, MONTH )
+    )
+    -- DisplayFolder: 02 Commercial \ Time Intelligence
+    -- FormatString: "#,0"
+    -- Description: "Moving Annual Total of Volume Cases — trailing 12 months ending at the selected date."
+
+MEASURE 'fact_sales_orders'[Volume Cases YoY %] =
+    VAR _cur = [Volume Cases]
+    VAR _ly  = CALCULATE ( [Volume Cases], SAMEPERIODLASTYEAR ( 'dim_date'[date] ) )
+    RETURN DIVIDE ( _cur - _ly, _ly )
+    -- DisplayFolder: 02 Commercial \ Time Intelligence
+    -- FormatString: "0.0%;-0.0%;0.0%"
+    -- Description: "Year-over-year growth rate of Volume Cases."
+
+// ============================================================
+// 03 Operations \ Manufacturing
+// ============================================================
+
+MEASURE 'fact_production'[OEE] =
+    VAR _avail = DIVIDE (
+        SUM ( 'fact_production'[run_time_hours] ),
+        SUM ( 'fact_production'[planned_production_hours] )
+    )
+    VAR _perf = DIVIDE (
+        SUM ( 'fact_production'[units_produced] ),
+        SUM ( 'fact_production'[ideal_units] )
+    )
+    VAR _qual = DIVIDE (
+        SUM ( 'fact_production'[good_units] ),
+        SUM ( 'fact_production'[units_produced] )
+    )
+    RETURN _avail * _perf * _qual
+    -- DisplayFolder: 03 Operations \ Manufacturing
+    -- FormatString: "0.0%"
+    -- Description: "Overall Equipment Effectiveness = Availability × Performance × Quality. Range 0–100%. Industry benchmark: 85% world-class."
+
+MEASURE 'fact_production'[Downtime Hours] =
+    SUM ( 'fact_production'[downtime_hours] )
+    -- DisplayFolder: 03 Operations \ Manufacturing
+    -- FormatString: "#,0.0"
+    -- Description: "Total unplanned downtime in hours for the selected line and period."
+
+MEASURE 'fact_production'[Scrap %] =
+    DIVIDE (
+        SUM ( 'fact_production'[units_produced] ) - SUM ( 'fact_production'[good_units] ),
+        SUM ( 'fact_production'[units_produced] )
+    )
+    -- DisplayFolder: 03 Operations \ Manufacturing
+    -- FormatString: "0.0%"
+    -- Description: "Share of produced units rejected as scrap. Lower is better."
+
+// ============================================================
+// 04 Operations \ Supply Chain
+// ============================================================
+
+MEASURE 'fact_sales_orders'[OTIF %] =
+    DIVIDE (
+        CALCULATE (
+            DISTINCTCOUNT ( 'fact_sales_orders'[order_line_id] ),
+            'fact_sales_orders'[is_on_time] = TRUE (),
+            'fact_sales_orders'[is_in_full] = TRUE ()
+        ),
+        DISTINCTCOUNT ( 'fact_sales_orders'[order_line_id] )
+    )
+    -- DisplayFolder: 04 Operations \ Supply Chain
+    -- FormatString: "0.0%"
+    -- Description: "On-Time In-Full: share of order lines delivered both on time and in full quantity. Higher is better."
+
+MEASURE 'fact_inventory'[Days of Supply] =
+    DIVIDE (
+        AVERAGE ( 'fact_inventory'[stock_units] ),
+        AVERAGE ( 'fact_inventory'[daily_sell_out_units] )
+    )
+    -- DisplayFolder: 04 Operations \ Supply Chain
+    -- FormatString: "#,0.0"
+    -- Description: "Average stock-on-hand units divided by average daily sell-out units. Target band: 14–28 days."
+
+// ============================================================
+// 05 Rankings
+// ============================================================
+
+MEASURE 'fact_sales_orders'[Top Market by NSV] =
+    VAR _ranked =
+        TOPN ( 1, VALUES ( 'dim_market'[country] ), [NSV], DESC )
+    RETURN CONCATENATEX ( _ranked, 'dim_market'[country], ", " )
+    -- DisplayFolder: 05 Rankings
+    -- Description: "Market (country) with the highest NSV in the selected context."
+
+MEASURE 'fact_sales_orders'[Top 5 SKUs by Volume] =
+    VAR _t =
+        TOPN ( 5, VALUES ( 'dim_product'[sku] ), [Volume Cases], DESC )
+    RETURN CONCATENATEX ( _t, 'dim_product'[sku], ", " )
+    -- DisplayFolder: 05 Rankings
+    -- Description: "Top 5 SKUs by Volume Cases, ranked descending."

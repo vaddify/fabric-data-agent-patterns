@@ -1,0 +1,10 @@
+expression DatabaseQuery =
+		let
+			database = Sql.Database("znr24q22jybejlbks6mrqwsija-h7e4k7msxyeutjazdgs6ejhmgq.datawarehouse.fabric.microsoft.com", "lh_mfg_mvp")
+		in
+			database
+	lineageTag: 5c11c1fa-f031-42d6-a415-26c09c9df548
+	kind: m
+
+	annotation PBI_NavigationStepName = Navigation
+	annotation PBI_ResultType = Exposed

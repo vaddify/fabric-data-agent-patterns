@@ -1,0 +1,44 @@
+# Repo-level ignores
+.vs/
+.vscode/
+*.user
+*.suo
+bin/
+obj/
+
+# PBIP local caches
+*.pbi/.pbi/cache/
+*.SemanticModel/.pbi/
+*.Report/.pbi/
+
+# OS noise
+Thumbs.db
+.DS_Store
+
+# Reports generated locally (commit only curated ones)
+patterns/**/examples/agent-score-report.local.md
+patterns/**/examples/bpa-report.local.txt
+
+# Environment-specific tenant identifiers (cached by scripts) — never commit
+scripts/.workspace-id
+scripts/.lakehouse-id
+scripts/.dataset-id
+scripts/.agent-id
+scripts/.capacity-id
+scripts/.admin-oid
+scripts/.te2-path
+scripts/.*-id
+
+# Diagnostic / one-off scripts that contain hardcoded tenant GUIDs
+scripts/debug-run.ps1
+scripts/list-assistants.ps1
+scripts/poll-thread.ps1
+scripts/probe-agent.ps1
+scripts/test-agent-call.ps1
+scripts/test-agent-grounded.ps1
+scripts/test-agent-pbi-token.ps1
+scripts/whoami-fabric.ps1
+
+# Synthetic data outputs (regenerated on demand)
+data/synthetic/*.csv
+data/synthetic/*.parquet

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "description": "Agent-ready Manufacturing/CPG semantic model (anonymized).",
+    "displayName": "sm_mfg_agentready",
+    "type": "SemanticModel"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "3079204e-fce7-4125-b4d6-c1f1daaaff23"
+  }
+}

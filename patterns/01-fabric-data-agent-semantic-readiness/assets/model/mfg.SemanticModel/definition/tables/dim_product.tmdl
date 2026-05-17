@@ -1,0 +1,56 @@
+/// Product dimension. One row per SKU.
+table dim_product
+	lineageTag: 6ea2021f-6706-428b-89a4-a7594864b6d3
+
+	/// SKU code (anonymized, e.g. SKU_0001). Primary key.
+	column sku
+		dataType: string
+		isKey
+		summarizeBy: none
+		sourceColumn: sku
+		lineageTag: cb0ce6f2-d84c-4bc6-9d9f-f2c3950facea
+
+	/// Anonymized brand label (Brand_X..Brand_V). Never real brand names.
+	column brand
+		dataType: string
+		summarizeBy: none
+		sourceColumn: brand
+		lineageTag: 673d3fdc-f11a-48fc-a43b-9bf489e5d581
+
+	/// Product category (Beverages, Confectionery, Snacks, Dairy).
+	column category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: category
+		lineageTag: fe369202-fc7c-4caa-9cde-63b3eb29fa5b
+
+	/// Pack configuration label (e.g. 12x330ml).
+	column pack_size
+		dataType: string
+		summarizeBy: none
+		sourceColumn: pack_size
+		lineageTag: 040ca379-ea41-455d-b5be-e9129b4b034d
+
+	/// Consumer units per standard case.
+	column units_per_case
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: units_per_case
+		lineageTag: d76b402e-e760-41e5-932b-bb068f4327f3
+
+	/// Mass in kg per consumer unit.
+	column kg_per_unit
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: kg_per_unit
+		lineageTag: a6315bb9-eae5-405a-ad53-fec5c37808ee
+
+	partition dim_product = entity
+		mode: directLake
+		source
+			entityName: dim_product
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
