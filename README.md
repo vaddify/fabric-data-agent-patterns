@@ -125,6 +125,23 @@ All ten numbers reconcile against direct DAX evaluation of the semantic model. T
 
 ---
 
+## Production pillars — what each one means in this repo
+
+A Data Agent that "answers questions" is not yet a Data Agent you can put in front of a business. These are the pillars we hold every pattern in this repo to, and where each one is implemented.
+
+| Pillar | What we enforce | Where it lives |
+|---|---|---|
+| **Responsible AI (RAI)** | Grounded-only answers (refuse if not in the model); no PII / individual-level data; no real customer / brand / plant names — only anonymized labels; one clarifying question before guessing; explicit refusal patterns for out-of-scope asks | Agent system prompt: [`agent-instructions.md`](./patterns/01-fabric-data-agent-semantic-readiness/assets/agent-instructions.md) rules 1, 9, 10 + Refusal examples. Enforced at runtime by the [score gate's](./patterns/01-fabric-data-agent-semantic-readiness/assets/score-agent.ps1) `ungrounded` regex guard. |
+| **FinOps** | F-SKU capacity is **paused** the moment the gate passes; capacity id cached locally so suspend/resume is a one-liner; no always-on resources in the pattern; cost note required in every `story.md` | [QUICKSTART step 11](./QUICKSTART.md#11-pause-the-capacity--do-this-immediately) (`/suspend?api-version=2023-11-01`) + [story.md](./patterns/01-fabric-data-agent-semantic-readiness/examples/story.md) "Cost note" section. |
+| **Security & identity** | Workload-correct token audience (`https://analysis.windows.net/powerbi/api`) — wrong audience silently bypasses grounding; service-principal-ready (tenant setting enabled in prereqs); per-environment ids kept out of git via `.gitignore` on `scripts/.*-id` | [QUICKSTART step 0](./QUICKSTART.md#0-prerequisites-one-time) + [step 9 gotcha A](./QUICKSTART.md#9-score-gate--the-bit-that-catches-ungrounded-answers). RLS on the semantic model is the next layer — apply it in your tenant before exposing the agent. |
+| **Governance & quality gates** | Two hard gates before any user sees the agent: **BPA** (descriptions, synonyms, hidden numeric fact cols, explicit measures only) and **Score** (≥ 8 / 10 grounded answers, ungrounded-deflection guard). Both are CI-runnable and commit their report. | [`bpa-rules.json`](./patterns/01-fabric-data-agent-semantic-readiness/assets/bpa-rules.json) + [`score-agent.ps1`](./patterns/01-fabric-data-agent-semantic-readiness/assets/score-agent.ps1). Reports committed to `examples/`. |
+| **Observability & reproducibility** | Every run produces a committed `agent-score-report.md` (10 Qs, agent answer, pass/fail, why), a `story.md` (what changed the score), and a `failure-log.md` (what didn't pass). Same artifacts every pattern. | [`examples/agent-score-report.md`](./patterns/01-fabric-data-agent-semantic-readiness/examples/agent-score-report.md), [`examples/story.md`](./patterns/01-fabric-data-agent-semantic-readiness/examples/story.md), [`examples/failure-log.md`](./patterns/01-fabric-data-agent-semantic-readiness/examples/failure-log.md). |
+| **Data privacy** | The shipped synthetic dataset contains no real entities. Contributions must keep `Market_*`, `Plant_*`, `Brand_*`, `SKU_*`, `Line_*` placeholders — the rule is repeated in every pattern's README. | [Pattern 01 README](./patterns/01-fabric-data-agent-semantic-readiness/README.md) "Confidentiality" callout, enforced in agent rule 9. |
+
+> **Honest gaps to close in your tenant** (not solved by this repo alone): row-level security on the semantic model, Purview lineage on the lakehouse tables, Defender for Cloud Apps policies on the workspace, and Azure Monitor alerts on capacity utilization. These are tenant-policy decisions; the patterns are designed to slot under them, not replace them.
+
+---
+
 ## Patterns
 
 | # | Pattern | Status | What you get |
