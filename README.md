@@ -1,10 +1,7 @@
-<h1 align="center">Grounded</h1>
-<p align="center"><em>Production patterns for Microsoft Fabric Data Agents.</em></p>
+<h1 align="center">Patterns for Microsoft Fabric Data Agents</h1>
 
 <p align="center">
-  <img src="docs/img/fabric-logo.svg" alt="Microsoft Fabric" height="64" />
-  &nbsp;&nbsp;&nbsp;
-  <img src="docs/img/fabric-data-agents.png" alt="Fabric Data Agents" height="64" />
+  <img src="docs/img/fabric-logo.svg" alt="Microsoft Fabric" height="72" />
 </p>
 
 ---
