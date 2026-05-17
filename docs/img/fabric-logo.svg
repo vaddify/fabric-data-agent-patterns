@@ -1,64 +1,123 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-label="Microsoft Fabric Data Agent Patterns">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" role="img" aria-label="Microsoft Fabric Data Agent Patterns">
   <defs>
-    <!-- Fabric brand-inspired teal -> cyan -> indigo -> violet -->
-    <linearGradient id="ribbonA" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"   stop-color="#0FD2C8"/>
-      <stop offset="40%"  stop-color="#1AA7E8"/>
-      <stop offset="100%" stop-color="#3B5BDB"/>
+    <!-- Pale mint background (matches Fabric brand backdrop) -->
+    <linearGradient id="bgMint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#D6F3E2"/>
+      <stop offset="100%" stop-color="#B8E6C9"/>
     </linearGradient>
-    <linearGradient id="ribbonB" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#3B5BDB"/>
-      <stop offset="55%"  stop-color="#6C5CE7"/>
-      <stop offset="100%" stop-color="#A855F7"/>
+
+    <!-- Fabric ribbon gradients: light mint -> deep emerald -->
+    <linearGradient id="ribbonTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#BFF0D8"/>
+      <stop offset="55%"  stop-color="#7BD7B0"/>
+      <stop offset="100%" stop-color="#3FB892"/>
     </linearGradient>
-    <linearGradient id="ribbonHi" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="ribbonMid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#5DC8A3"/>
+      <stop offset="100%" stop-color="#2A8E76"/>
+    </linearGradient>
+    <linearGradient id="ribbonBot" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#3FB892"/>
+      <stop offset="100%" stop-color="#0E6B58"/>
+    </linearGradient>
+    <linearGradient id="ribbonHi" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
-    <filter id="ribbonShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-      <feOffset dx="0" dy="3" result="off"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
+
+    <!-- Face highlight -->
+    <radialGradient id="faceShine" cx="35%" cy="30%" r="60%">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.45"/>
+      <stop offset="70%"  stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="softDrop" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="5" result="off"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
       <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
 
-  <!-- Fabric-style infinity ribbon mark -->
-  <g transform="translate(20,18)" filter="url(#ribbonShadow)">
-    <!-- ribbon A (lower loop, teal->blue) -->
-    <path d="
-      M 24 110
-      C 24 60, 70 30, 110 60
-      C 145 86, 145 86, 120 110
-      C 95 134, 50 134, 24 110 Z"
-      fill="url(#ribbonA)"/>
-    <!-- ribbon B (upper loop, blue->violet) crossing in front -->
-    <path d="
-      M 140 30
-      C 100 30, 70 60, 90 90
-      C 110 120, 156 120, 144 78
-      C 138 56, 124 40, 140 30 Z"
-      fill="url(#ribbonB)"/>
-    <!-- crossover band: short overlap stripe -->
-    <path d="
-      M 92 80
-      C 100 70, 116 70, 124 80
-      C 132 92, 124 100, 116 98
-      C 104 96, 92 90, 92 80 Z"
-      fill="url(#ribbonB)" opacity="0.85"/>
-    <!-- highlight strip across both ribbons -->
-    <path d="
-      M 30 100
-      C 60 70, 110 70, 150 60"
-      fill="none" stroke="url(#ribbonHi)" stroke-width="6" stroke-linecap="round"/>
-    <!-- subtle inner accent dot (anchors the mark) -->
-    <circle cx="108" cy="88" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <!-- Mint backdrop with rounded corners -->
+  <rect x="0" y="0" width="900" height="320" rx="28" fill="url(#bgMint)"/>
+
+  <!-- ========== FRIENDLY DATA AGENT CHARACTER ========== -->
+  <g transform="translate(60,55)" filter="url(#softDrop)">
+    <!-- Folded ribbon "body/scarf" beneath the head (Fabric F-ribbon feel) -->
+    <path d="M 20 175
+             L 95 145
+             L 175 165
+             L 165 200
+             L 90 215
+             L 18 200 Z"
+          fill="url(#ribbonBot)"/>
+    <path d="M 20 175 L 95 145 L 175 165 L 168 178 L 95 158 L 22 188 Z"
+          fill="url(#ribbonHi)" opacity="0.55"/>
+
+    <!-- Head: rounded squircle in Fabric mint gradient -->
+    <path d="M 95 18
+             C 145 18, 175 50, 175 95
+             C 175 140, 145 168, 95 168
+             C 45 168, 15 140, 15 95
+             C 15 50, 45 18, 95 18 Z"
+          fill="url(#ribbonMid)"/>
+    <!-- Top folded ribbon highlight across the head -->
+    <path d="M 30 60
+             C 60 35, 130 35, 165 60
+             L 165 88
+             C 130 65, 60 65, 30 88 Z"
+          fill="url(#ribbonTop)"/>
+    <!-- Side fold shadow -->
+    <path d="M 15 95
+             C 15 130, 35 158, 70 167
+             L 70 130
+             C 45 122, 30 110, 25 95 Z"
+          fill="#0E6B58" opacity="0.18"/>
+    <!-- Face shine -->
+    <ellipse cx="78" cy="80" rx="70" ry="55" fill="url(#faceShine)"/>
+
+    <!-- Friendly eyes -->
+    <g>
+      <ellipse cx="68"  cy="95" rx="11" ry="13" fill="#0E3B33"/>
+      <ellipse cx="124" cy="95" rx="11" ry="13" fill="#0E3B33"/>
+      <!-- eye sparkles -->
+      <circle cx="72"  cy="89" r="3.2" fill="#FFFFFF"/>
+      <circle cx="128" cy="89" r="3.2" fill="#FFFFFF"/>
+      <circle cx="64"  cy="100" r="1.6" fill="#FFFFFF" opacity="0.7"/>
+      <circle cx="120" cy="100" r="1.6" fill="#FFFFFF" opacity="0.7"/>
+    </g>
+
+    <!-- Soft smile -->
+    <path d="M 72 128 Q 96 148 120 128"
+          fill="none" stroke="#0E3B33" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Cheek blush -->
+    <ellipse cx="55"  cy="122" rx="7" ry="4" fill="#FFB3B3" opacity="0.55"/>
+    <ellipse cx="137" cy="122" rx="7" ry="4" fill="#FFB3B3" opacity="0.55"/>
+
+    <!-- AI sparkle / antenna -->
+    <g transform="translate(135,8)">
+      <line x1="0" y1="22" x2="0" y2="6" stroke="#2A8E76" stroke-width="3" stroke-linecap="round"/>
+      <path d="M 0 -6 L 3 0 L 9 3 L 3 6 L 0 12 L -3 6 L -9 3 L -3 0 Z"
+            fill="#FFD66E" stroke="#E0A93E" stroke-width="0.8"/>
+    </g>
+    <!-- small data dots beside head -->
+    <circle cx="195" cy="55"  r="4" fill="#2A8E76"/>
+    <circle cx="205" cy="80"  r="6" fill="#3FB892"/>
+    <circle cx="195" cy="108" r="3" fill="#0E6B58"/>
   </g>
 
-  <!-- Wordmark -->
-  <g font-family="Segoe UI, Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif">
-    <text x="210" y="78"  font-size="38" font-weight="700" fill="#0F172A" letter-spacing="-0.6">Microsoft Fabric</text>
-    <text x="210" y="116" font-size="24" font-weight="600" fill="#3B5BDB" letter-spacing="0.2">Data Agent Patterns</text>
-    <text x="210" y="146" font-size="13" font-weight="600" fill="#64748B" letter-spacing="1.4">GROUNDED &#x2022; GATED &#x2022; PRODUCTION-READY</text>
+  <!-- ========== WORDMARK ========== -->
+  <g font-family="Segoe UI, Segoe UI Variable, Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif">
+    <text x="320" y="130" font-size="48" font-weight="700" fill="#0F2A24" letter-spacing="-0.8">
+      Microsoft Fabric
+    </text>
+    <text x="320" y="178" font-size="32" font-weight="600" fill="#1F8F75" letter-spacing="-0.2">
+      Data Agent Patterns
+    </text>
+    <text x="320" y="212" font-size="15" font-weight="600" fill="#2A8E76" letter-spacing="1.6">
+      GROUNDED &#x2022; GATED &#x2022; PRODUCTION-READY
+    </text>
   </g>
 </svg>
