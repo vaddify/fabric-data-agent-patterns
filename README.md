@@ -1,4 +1,13 @@
-# Vaddify Labs — Fabric Data Agent Patterns
+<h1 align="center">Grounded</h1>
+<p align="center"><em>Production patterns for Microsoft Fabric Data Agents.</em></p>
+
+<p align="center">
+  <img src="docs/img/fabric-logo.svg" alt="Microsoft Fabric" height="64" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/img/fabric-data-agents.png" alt="Fabric Data Agents" height="64" />
+</p>
+
+---
 
 Repeatable, **gated** patterns for shipping Microsoft Fabric Data Agents on enterprise tenants. Each pattern ships with a playbook, drop-in assets, a one-page Go / No-Go checklist, and a CI-runnable score gate that catches ungrounded answers before they reach users.
 
